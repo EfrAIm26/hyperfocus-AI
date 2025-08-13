@@ -23,197 +23,198 @@
             --accent-color: #38ef7d;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: var(--font-main);
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-primary);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        body { font-family: var(--font-main); background: var(--bg-gradient); background-attachment: fixed; color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
         #app-container { display: flex; width: 100%; height: 100%; }
         #sidebar {
-            width: 280px;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
+            width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; padding: 15px;
         }
         #sidebar-header { display: flex; align-items: center; margin-bottom: 25px; }
         #profile-pic { width: 40px; height: 40px; border-radius: 50%; background: #ccc; margin-right: 10px; }
         #profile-name { font-weight: 500; }
-        .sidebar-section { margin-bottom: 20px; }
-        .sidebar-title {
-            font-size: 0.9em; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; color: var(--text-secondary);
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-        }
+        .sidebar-section { margin-bottom: 20px; display: flex; flex-direction: column; }
+        .sidebar-title { font-size: 0.9em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .add-btn { background: none; border: none; color: var(--accent-color); font-size: 1.2em; cursor: pointer; }
-        .sidebar-list { list-style: none; overflow-y: auto; }
-        .sidebar-item { padding: 8px 10px; border-radius: 5px; cursor: pointer; transition: background 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .sidebar-item:hover { background: rgba(255, 255, 255, 0.05); }
-        .sidebar-item.active { background-color: rgba(0, 198, 255, 0.2); font-weight: bold; }
-        .course > .sidebar-item { font-weight: 500; }
-        .topic { padding-left: 20px; }
-        .chat-item { padding-left: 40px; font-size: 0.9em; color: var(--text-secondary); }
-        .new-item-input { width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; border-radius: 4px; margin-top: 5px; }
+        .sidebar-list { list-style: none; overflow-y: auto; flex: 1; }
+        .sidebar-item-container { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
+        .sidebar-item-container:hover { background: rgba(255, 255, 255, 0.05); }
+        .sidebar-item-container.active { background-color: rgba(0, 198, 255, 0.2); font-weight: bold; }
+        .item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
+        .course > .sidebar-item-container { font-weight: 500; }
+        .chat-item { padding-left: 20px; font-size: 0.9em; color: var(--text-secondary); }
+        .course .chat-item { padding-left: 40px; }
         #chat-workspace { flex: 1; display: flex; flex-direction: column; }
         #auth-buttons { position: absolute; top: 20px; right: 20px; z-index: 10; }
-        .auth-btn { background: var(--button-gradient); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 500; margin-left: 10px; transition: transform 0.2s; }
-        .auth-btn:hover { transform: scale(1.05); }
-        #chat-container { flex: 1; display: flex; flex-direction: column; background: var(--chat-bg); backdrop-filter: blur(5px); margin: 20px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
-        #chat-header { background: var(--header-gradient); color: white; padding: 15px; text-align: center; font-size: 1.2em; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .auth-btn { background: var(--button-gradient); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 500; margin-left: 10px; }
+        #chat-container { flex: 1; display: flex; flex-direction: column; background: var(--chat-bg); backdrop-filter: blur(5px); margin: 20px; border-radius: 15px; overflow: hidden; }
+        #chat-header { background: var(--header-gradient); color: white; padding: 15px; text-align: center; font-size: 1.2em; font-weight: bold; }
         #chat-history { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
         .message { margin-bottom: 15px; padding: 12px 18px; border-radius: 10px; max-width: 80%; word-wrap: break-word; line-height: 1.5; }
         .user-message { background: var(--user-msg-gradient); color: #111; align-self: flex-end; margin-left: auto; }
         .bot-message { background: var(--bot-msg-bg); border: 1px solid var(--border-color); align-self: flex-start; }
         #input-area { padding: 15px 20px; border-top: 1px solid var(--border-color); }
         #input-controls { display: flex; gap: 10px; margin-bottom: 10px; }
-        #model-select { padding: 10px; border-radius: 5px; background: rgba(0,0,0,0.3); color: white; border: 1px solid var(--border-color); }
-        #input-container { display: flex; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 5px; border: 1px solid var(--border-color); flex: 1; }
         #user-input { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-primary); outline: none; }
-        #send-button { padding: 10px 20px; background: var(--button-gradient); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; }
+        #model-select { flex-shrink: 0; padding: 10px; border-radius: 5px; background: rgba(0,0,0,0.3); color: white; border: 1px solid var(--border-color); }
+        #send-button { flex-shrink: 0; padding: 10px 20px; background: var(--button-gradient); color: white; border: none; border-radius: 5px; cursor: pointer; }
         #disclaimer { font-size: 0.75em; color: var(--text-secondary); text-align: center; margin-top: 10px; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--sidebar-bg); padding: 30px; border-radius: 10px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 400px; }
+        .modal-content h3 { margin-bottom: 20px; text-align: center; }
+        .modal-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; border-radius: 4px; margin-bottom: 20px; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; }
+        .btn-accept { background: var(--header-gradient); color: white; }
+        .btn-cancel { background: var(--bot-msg-bg); color: white; }
     </style>
 </head>
 <body>
 
+    <div id="custom-prompt-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">Nuevo Curso</h3>
+            <input type="text" id="modal-input" class="modal-input" placeholder="Nombre...">
+            <div class="modal-buttons">
+                <button id="modal-cancel-btn" class="modal-btn btn-cancel">Cancelar</button>
+                <button id="modal-accept-btn" class="modal-btn btn-accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="app-container">
         <aside id="sidebar" class="hidden">
             <div id="sidebar-header">
-                <img id="profile-pic" src="https://i.pravatar.cc/40?u=ana" alt="Foto de perfil de Ana">
+                <img id="profile-pic" src="https://i.pravatar.cc/40?u=ana" alt="Foto de perfil">
                 <span id="profile-name">Ana</span>
             </div>
+            
+            <div class="sidebar-section">
+                <!-- El botón de Horario es un enlace a la futura app de horario -->
+                <a href="./horario/horario.html" style="text-decoration: none;">
+                    <div class="sidebar-title"><span>Horario</span><span class="add-btn">🗓️</span></div>
+                </a>
+            </div>
+            
+            <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="sidebar-title"><span>Cursos</span><button id="add-course-btn" class="add-btn">+</button></div>
+                <ul class="sidebar-list" id="courses-list"></ul>
+            </div>
+            
             <div class="sidebar-section">
                 <div class="sidebar-title"><span>Historial</span></div>
                 <ul class="sidebar-list" id="history-list"></ul>
             </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title"><span>Cursos</span><button class="add-btn" id="add-course-btn">+</button></div>
-                <ul class="sidebar-list" id="courses-list"></ul>
-            </div>
         </aside>
 
         <main id="chat-workspace">
-            <div id="auth-buttons">
-                <button id="login-btn" class="auth-btn">Log In</button>
-                <button class="auth-btn">Sign up for free</button>
-            </div>
-
+            <div id="auth-buttons"><button id="login-btn" class="auth-btn">Log In</button></div>
             <div id="chat-container">
-                <div id="chat-header">
-                    <span id="current-context-title">Hyperfocus AI - Inicio</span>
-                </div>
+                <div id="chat-header"><span id="current-context-title">Hyperfocus AI - Inicio</span></div>
                 <div id="chat-history"></div>
                 <div id="input-area">
                     <div id="input-controls">
                         <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí...">
                         <select id="model-select">
                             <option value="mistralai/mistral-7b-instruct">Mistral 7B (Rápido)</option>
-                            <option value="google/gemma-7b-it">Google Gemma 7B</option>
                             <option value="meta-llama/llama-3-8b-instruct">Llama 3 8B (Calidad)</option>
+                            <option value="google/gemini-1.5-flash-latest">Google Gemini 1.5 Flash</option>
+                            <option value="openai/gpt-4o">OpenAI GPT-4o (Avanzado)</option>
                         </select>
                         <button id="send-button">Send</button>
                     </div>
-                    <p id="disclaimer" class="hidden">Hyperfocus AI puede cometer errores. Considera verificar la información importante.</p>
+                    <p id="disclaimer" class="hidden">Hyperfocus AI puede cometer errores.</p>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // --- ELEMENTOS DEL DOM ---
+        // --- DOM ELEMENTS ---
         const elements = {
-            loginBtn: document.getElementById('login-btn'),
-            authButtons: document.getElementById('auth-buttons'),
-            sidebar: document.getElementById('sidebar'),
-            historyList: document.getElementById('history-list'),
-            coursesList: document.getElementById('courses-list'),
-            addCourseBtn: document.getElementById('add-course-btn'),
-            currentContextTitle: document.getElementById('current-context-title'),
-            chatHistory: document.getElementById('chat-history'),
-            userInput: document.getElementById('user-input'),
-            modelSelect: document.getElementById('model-select'),
-            sendButton: document.getElementById('send-button'),
-            disclaimer: document.getElementById('disclaimer'),
+            modal: document.getElementById('custom-prompt-modal'), modalTitle: document.getElementById('modal-title'), modalInput: document.getElementById('modal-input'), modalCancelBtn: document.getElementById('modal-cancel-btn'), modalAcceptBtn: document.getElementById('modal-accept-btn'),
+            loginBtn: document.getElementById('login-btn'), authButtons: document.getElementById('auth-buttons'), sidebar: document.getElementById('sidebar'),
+            coursesList: document.getElementById('courses-list'), historyList: document.getElementById('history-list'), addCourseBtn: document.getElementById('add-course-btn'),
+            currentContextTitle: document.getElementById('current-context-title'), chatHistory: document.getElementById('chat-history'), userInput: document.getElementById('user-input'), modelSelect: document.getElementById('model-select'), sendButton: document.getElementById('send-button'), disclaimer: document.getElementById('disclaimer'),
         };
 
-        // --- ESTADO DE LA APLICACIÓN ---
-        // MVP: El estado se reinicia al recargar. El siguiente paso sería guardarlo en localStorage.
-        let appState = {
-            activeContext: { type: 'new_chat', id: null }, // 'new_chat', 'chat', 'course', 'topic'
-            chats: {}, // Almacén de todos los chats por ID
-            courses: [], // { id, name, topics: [{ id, name }] }
-        };
+        // --- APP STATE ---
+        let appState = { activeContext: { type: 'new_chat', id: null }, chats: {}, courses: [] };
+        let modalResolve = null;
 
-        // --- LÓGICA DE RENDERIZADO ---
+        // --- MODAL LOGIC ---
+        function showCustomPrompt(title) {
+            elements.modalTitle.textContent = title;
+            elements.modalInput.value = '';
+            elements.modal.classList.remove('hidden');
+            elements.modalInput.focus();
+            return new Promise(resolve => { modalResolve = resolve; });
+        }
+        function closeModal() {
+            elements.modal.classList.add('hidden');
+            if (modalResolve) modalResolve(null);
+            modalResolve = null;
+        }
+        elements.modalAcceptBtn.addEventListener('click', () => {
+            if (modalResolve) modalResolve(elements.modalInput.value);
+            closeModal();
+        });
+        elements.modalCancelBtn.addEventListener('click', closeModal);
+
+        // --- RENDER LOGIC ---
         function renderSidebar() {
             elements.historyList.innerHTML = '';
             elements.coursesList.innerHTML = '';
-            
-            // Renderizar historial
-            Object.values(appState.chats).filter(c => !c.parentId).forEach(chat => {
-                const li = document.createElement('li');
-                li.className = `sidebar-item chat-item ${appState.activeContext.id === chat.id ? 'active' : ''}`;
-                li.textContent = chat.title;
-                li.dataset.type = 'chat';
-                li.dataset.id = chat.id;
-                elements.historyList.appendChild(li);
-            });
-
-            // Renderizar cursos y sus jerarquías
+            Object.values(appState.chats).filter(c => !c.parentId).forEach(chat => createSidebarItem(elements.historyList, chat));
             appState.courses.forEach(course => {
-                const courseLi = document.createElement('li');
-                courseLi.className = 'course';
-                courseLi.innerHTML = `<div class="sidebar-item ${appState.activeContext.id === course.id ? 'active' : ''}" data-type="course" data-id="${course.id}">${course.name}</div>`;
-                const topicsUl = document.createElement('ul');
-                
-                course.topics.forEach(topic => {
-                    const topicLi = document.createElement('li');
-                    topicLi.className = 'topic';
-                    topicLi.innerHTML = `<div class="sidebar-item ${appState.activeContext.id === topic.id ? 'active' : ''}" data-type="topic" data-id="${topic.id}">${topic.name}</div>`;
-                    topicsUl.appendChild(topicLi);
-                });
-                
-                // Renderizar chats del curso
-                Object.values(appState.chats).filter(c => c.parentId === course.id).forEach(chat => {
-                    const chatLi = document.createElement('li');
-                    chatLi.className = `sidebar-item chat-item ${appState.activeContext.id === chat.id ? 'active' : ''}`;
-                    chatLi.textContent = chat.title;
-                    chatLi.dataset.type = 'chat';
-                    chatLi.dataset.id = chat.id;
-                    topicsUl.appendChild(chatLi);
-                });
-
-                courseLi.appendChild(topicsUl);
-                elements.coursesList.appendChild(courseLi);
+                const courseContainer = document.createElement('li');
+                courseContainer.className = 'course';
+                createSidebarItem(courseContainer, course);
+                const childrenContainer = document.createElement('ul');
+                Object.values(appState.chats).filter(c => c.parentId === course.id).forEach(chat => createSidebarItem(childrenContainer, chat));
+                courseContainer.appendChild(childrenContainer);
+                elements.coursesList.appendChild(courseContainer);
             });
         }
+        function createSidebarItem(parent, item) {
+            const itemContainer = document.createElement('div');
+            itemContainer.className = `sidebar-item-container ${appState.activeContext.id === item.id ? 'active' : ''}`;
+            itemContainer.dataset.type = item.type;
+            itemContainer.dataset.id = item.id;
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'item-name';
+            nameSpan.textContent = item.title || item.name;
+            itemContainer.appendChild(nameSpan);
+            if (item.type === 'course') {
+                const addChatBtn = document.createElement('button');
+                addChatBtn.className = 'add-btn';
+                addChatBtn.textContent = '+';
+                addChatBtn.dataset.courseId = item.id;
+                itemContainer.appendChild(addChatBtn);
+            }
+            parent.appendChild(itemContainer);
+        }
 
+        // --- APP LOGIC ---
         function loadContext(type, id) {
             appState.activeContext = { type, id };
             elements.chatHistory.innerHTML = '';
-            
             let title = 'Hyperfocus AI - Inicio';
             if (type === 'chat') {
                 const chat = appState.chats[id];
                 title = chat.title;
-                chat.messages.forEach(msg => addMessageToUI(msg.content, msg.isUser));
+                chat.messages.forEach(msg => addMessageToUI(msg.role === 'user', msg.content));
             } else if (type === 'course') {
                 const course = appState.courses.find(c => c.id === id);
                 title = `Curso: ${course.name}`;
-                addMessageToUI(`Has entrado al curso de ${course.name}. ¿Sobre qué tema quieres hablar?`, false);
+                addMessageToUI(false, `Bienvenido al curso de ${course.name}. ¿Qué quieres aprender hoy?`);
             }
             elements.currentContextTitle.textContent = title;
             renderSidebar();
         }
 
-        // --- LÓGICA DE MENSAJERÍA ---
-        function addMessageToUI(content, isUser) {
+        function addMessageToUI(isUser, content) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
             messageDiv.textContent = content;
@@ -224,83 +225,85 @@
         async function sendMessage() {
             const messageContent = elements.userInput.value.trim();
             if (!messageContent) return;
-
-            addMessageToUI(messageContent, true);
+            addMessageToUI(true, messageContent);
             elements.userInput.value = '';
 
             let currentChat;
             if (appState.activeContext.type === 'chat') {
                 currentChat = appState.chats[appState.activeContext.id];
-            } else { // Es un chat nuevo
+            } else { // New chat
                 const newChatId = `chat_${Date.now()}`;
-                const title = messageContent.substring(0, 30) + (messageContent.length > 30 ? '...' : '');
+                const title = messageContent.substring(0, 30) + '...';
                 currentChat = {
-                    id: newChatId,
-                    title: title,
-                    messages: [],
-                    parentId: (appState.activeContext.type === 'course' || appState.activeContext.type === 'topic') ? appState.activeContext.id : null,
+                    id: newChatId, title, messages: [], type: 'chat',
+                    parentId: appState.activeContext.type === 'course' ? appState.activeContext.id : null,
                 };
                 appState.chats[newChatId] = currentChat;
                 appState.activeContext = { type: 'chat', id: newChatId };
                 renderSidebar();
             }
 
-            currentChat.messages.push({ content: messageContent, isUser: true });
-
+            currentChat.messages.push({ role: 'user', content: messageContent });
+            
             try {
+                const messagesToSend = [{ role: 'system', content: `Estás en el curso: ${currentChat.parentId ? appState.courses.find(c=>c.id === currentChat.parentId).name : 'General'}. Eres un tutor experto.` }]
+                    .concat(currentChat.messages.map(m => ({ role: m.role, content: m.content })));
+                
                 const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: elements.modelSelect.value,
-                        messages: [{ role: 'user', content: messageContent }],
-                    }),
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: elements.modelSelect.value, messages: messagesToSend }),
                 });
-                if (!response.ok) throw new Error('API Error');
                 const data = await response.json();
+                if (data.error || !data.choices?.length) throw new Error(data.error?.message || "No se recibió respuesta válida.");
+                
                 const botReply = data.choices[0].message.content;
-                addMessageToUI(botReply, false);
-                currentChat.messages.push({ content: botReply, isUser: false });
+                addMessageToUI(false, botReply);
+                currentChat.messages.push({ role: 'assistant', content: botReply });
             } catch (error) {
-                addMessageToUI(`Error: ${error.message}`, false);
+                addMessageToUI(false, `Error: ${error.message}`);
             }
         }
-
-        // --- MANEJADORES DE EVENTOS ---
+        
+        // --- EVENT LISTENERS ---
         elements.loginBtn.addEventListener('click', () => {
             elements.authButtons.classList.add('hidden');
             elements.sidebar.classList.remove('hidden');
             renderSidebar();
         });
 
-        elements.addCourseBtn.addEventListener('click', () => {
-            const courseName = prompt("Nombre del nuevo curso:");
+        elements.addCourseBtn.addEventListener('click', async () => {
+            const courseName = await showCustomPrompt("Nuevo Curso");
             if (courseName) {
-                const newCourse = {
-                    id: `course_${Date.now()}`,
-                    name: courseName,
-                    topics: []
-                };
-                appState.courses.push(newCourse);
+                appState.courses.push({ id: `course_${Date.now()}`, name: courseName, type: 'course' });
                 renderSidebar();
             }
         });
-        
-        function handleSidebarClick(e) {
-            const target = e.target.closest('.sidebar-item');
-            if (target) {
-                const type = target.dataset.type;
-                const id = target.dataset.id;
-                loadContext(type, id);
+
+        elements.coursesList.addEventListener('click', async (e) => {
+            const target = e.target;
+            if (target.classList.contains('add-btn')) {
+                e.stopPropagation();
+                const courseId = target.dataset.courseId;
+                const chatName = await showCustomPrompt("Nuevo Chat en este Curso");
+                if (chatName) {
+                    const newChat = { id: `chat_${Date.now()}`, title: chatName, messages: [], type: 'chat', parentId: courseId };
+                    appState.chats[newChat.id] = newChat;
+                    loadContext('chat', newChat.id);
+                }
+            } else if (target.closest('.sidebar-item-container')) {
+                const container = target.closest('.sidebar-item-container');
+                loadContext(container.dataset.type, container.dataset.id);
             }
-        }
-        elements.historyList.addEventListener('click', handleSidebarClick);
-        elements.coursesList.addEventListener('click', handleSidebarClick);
+        });
+
+        elements.historyList.addEventListener('click', (e) => {
+            const target = e.target.closest('.sidebar-item-container');
+            if (target) loadContext(target.dataset.type, target.dataset.id);
+        });
 
         elements.sendButton.addEventListener('click', sendMessage);
-        elements.userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        elements.userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
         elements.userInput.addEventListener('focus', () => elements.disclaimer.classList.remove('hidden'));
-
     </script>
 </body>
 </html>
