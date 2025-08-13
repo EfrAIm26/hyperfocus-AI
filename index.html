@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperfocus AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- VARIABLES DE DISEÑO --- */
+        :root {
+            --font-main: 'Inter', sans-serif;
+            --bg-gradient: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            --sidebar-bg: rgba(10, 25, 47, 0.85);
+            --chat-bg: rgba(23, 42, 70, 0.9);
+            --header-gradient: linear-gradient(90deg, #00c6ff, #0072ff);
+            --button-gradient: linear-gradient(90deg, #11998e, #38ef7d);
+            --user-msg-gradient: linear-gradient(90deg, #00c9ff, #92fe9d);
+            --bot-msg-bg: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- ESTILOS GLOBALES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL DE LA APP --- */
+        #app-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- BARRA LATERAL (SIDEBAR) --- */
+        #sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        #sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        #profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ccc;
+            margin-right: 10px;
+        }
+        #profile-name {
+            font-weight: 500;
+        }
+        .sidebar-title {
+            font-size: 0.9em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        #courses-list {
+            list-style: none;
+            overflow-y: auto;
+        }
+        #courses-list li {
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #courses-list li:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .sub-topics {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+        .sub-topics li {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        /* --- ÁREA PRINCIPAL DEL CHAT --- */
+        #chat-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        .auth-btn {
+            background: var(--button-gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 10px;
+            transition: transform 0.2s;
+        }
+        .auth-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        #chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+            backdrop-filter: blur(5px);
+            margin: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        #chat-header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #archive-btn {
+            font-size: 0.8em;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+        }
+        #chat-history {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        .user-message {
+            background: var(--user-msg-gradient);
+            color: #111;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .bot-message {
+            background: var(--bot-msg-bg);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+        }
+        
+        #input-area {
+            padding: 20px;
+        }
+        #input-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+        }
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            outline: none;
+        }
+        #send-button {
+            padding: 10px 20px;
+            background: var(--button-gradient);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        #disclaimer {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <!-- BARRA LATERAL (INICIALMENTE OCULTA) -->
+        <aside id="sidebar" class="hidden">
+            <div id="sidebar-header">
+                <img id="profile-pic" src="https://i.pravatar.cc/40?u=ana" alt="Foto de perfil de Ana">
+                <span id="profile-name">Ana</span>
+            </div>
+            
+            <span class="sidebar-title">Cursos</span>
+            <ul id="courses-list">
+                <li>Matemáticas
+                    <ul class="sub-topics">
+                        <li>Álgebra</li>
+                        <li>Cálculo</li>
+                    </ul>
+                </li>
+                <li>Programación
+                    <ul class="sub-topics">
+                        <li>Python</li>
+                        <li>JavaScript</li>
+                    </ul>
+                </li>
+                <li>Historia</li>
+            </ul>
+        </aside>
+
+        <!-- ÁREA PRINCIPAL -->
+        <main id="chat-workspace">
+            <!-- BOTONES DE LOGIN (SE OCULTARÁN) -->
+            <div id="auth-buttons">
+                <button id="login-btn" class="auth-btn">Log In</button>
+                <button class="auth-btn">Sign up for free</button>
+            </div>
+
+            <div id="chat-container">
+                <div id="chat-header">
+                    <span id="current-course-title">Hyperfocus AI</span>
+                    <button id="archive-btn" class="hidden">Archivos</button>
+                </div>
+                <div id="chat-history"></div>
+                <div id="input-area">
+                    <div id="input-container">
+                        <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí...">
+                        <button id="send-button">Send</button>
+                    </div>
+                    <p id="disclaimer" class="hidden">
+                        Hyperfocus AI puede cometer errores. Considera verificar la información importante.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- CAPTURA DE ELEMENTOS DEL DOM ---
+        const loginBtn = document.getElementById('login-btn');
+        const authButtons = document.getElementById('auth-buttons');
+        const sidebar = document.getElementById('sidebar');
+        const disclaimer = document.getElementById('disclaimer');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const chatHistory = document.getElementById('chat-history');
+        const currentCourseTitle = document.getElementById('current-course-title');
+        const archiveBtn = document.getElementById('archive-btn');
+        const coursesList = document.getElementById('courses-list');
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+
+        // MVP: Simular el inicio de sesión
+        loginBtn.addEventListener('click', () => {
+            authButtons.classList.add('hidden');
+            sidebar.classList.remove('hidden');
+        });
+        
+        // MVP: Al hacer clic en un curso, se actualiza el header del chat
+        coursesList.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI') {
+                // Tomamos solo el texto del LI principal, ignorando los subtemas
+                const courseName = e.target.childNodes[0].nodeValue.trim();
+                currentCourseTitle.textContent = courseName;
+                archiveBtn.classList.remove('hidden'); // Mostramos el botón de archivos
+                chatHistory.innerHTML = ''; // Limpiamos el chat para el nuevo curso
+                addMessage(`Has entrado al curso de ${courseName}. ¿Sobre qué tema específico quieres hablar?`, false);
+            }
+        });
+
+        // Mostrar el disclaimer cuando el usuario empieza a escribir
+        userInput.addEventListener('focus', () => {
+            disclaimer.classList.remove('hidden');
+        });
+        
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+            messageDiv.textContent = content;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            userInput.value = '';
+
+            const systemPrompt = "You are a helpful tutor specialized in assisting students with educational topics like math, science, coding, history, and more. Provide clear, step-by-step explanations.";
+
+            try {
+                const response = await fetch('/api/chat', { //Llama a nuestra función serverless
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'mistralai/mistral-7b-instruct', // Usamos un modelo por defecto
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            { role: 'user', content: message }
+                        ],
+                    }),
+                });
+
+                if (!response.ok) throw new Error('La respuesta de la red no fue correcta.');
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error.message);
+
+                const botReply = data.choices[0].message.content;
+                addMessage(botReply, false);
+            } catch (error) {
+                addMessage(`Error: ${error.message}`, false);
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+    </script>
+</body>
+</html>
