@@ -38,7 +38,7 @@
         .sidebar-item.active { background-color: rgba(0, 198, 255, 0.2); font-weight: bold; }
         .toggle-arrow { width: 16px; text-align: center; margin-right: 4px; transition: transform 0.2s; }
         .toggle-arrow.collapsed { transform: rotate(-90deg); }
-        .color-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+        .color-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
         .item-name { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .item-menu-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2em; padding: 0 5px; }
         .nested-list { padding-left: 16px; }
@@ -67,103 +67,63 @@
 <body>
     <input type="color" id="color-picker" class="hidden">
     <div id="context-menu" class="context-menu hidden"></div>
-    <div id="custom-prompt-modal" class="modal-overlay hidden"> <!-- ... (modal HTML sin cambios) ... --> </div>
-    <div id="app-container"> <!-- ... (app container HTML sin cambios) ... --> </div>
+    <div id="custom-prompt-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">Nuevo Curso</h3>
+            <input type="text" id="modal-input" class="modal-input" placeholder="Nombre...">
+            <div class="modal-buttons">
+                <button id="modal-cancel-btn" class="modal-btn btn-cancel">Cancelar</button>
+                <button id="modal-accept-btn" class="modal-btn btn-accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="app-container">
+        <aside id="sidebar" class="hidden">
+            <div id="sidebar-header">
+                <img id="profile-pic" src="https://i.pravatar.cc/40?u=ana" alt="Foto de perfil">
+                <span id="profile-name">Ana</span>
+            </div>
+            <div class="sidebar-section">
+                 <a href="./horario/horario.html" style="text-decoration: none;">
+                    <div class="sidebar-title"><span>Horario</span><span class="add-btn">🗓️</span></div>
+                </a>
+            </div>
+            <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="sidebar-title"><span>Cursos</span><button id="add-course-btn" class="add-btn">+</button></div>
+                <ul class="sidebar-list" id="courses-list"></ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title"><span>Historial</span></div>
+                <ul class="sidebar-list" id="history-list"></ul>
+            </div>
+        </aside>
+
+        <main id="chat-workspace">
+            <div id="auth-buttons"><button id="login-btn" class="auth-btn">Log In</button></div>
+            <div id="chat-container">
+                <div id="chat-header"><span id="current-context-title">Hyperfocus AI - Inicio</span></div>
+                <div id="chat-history"></div>
+                <div id="input-area">
+                    <div id="input-controls">
+                        <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí...">
+                        <select id="model-select">
+                            <option value="mistralai/mistral-small-3.2-24b-instruct">Mistral Small 3.2</option>
+                            <option value="meta-llama/llama-3-8b-instruct">Llama 3 8B</option>
+                            <option value="openai/gpt-5-nano">OpenAI GPT-5 Nano</option>
+                            <option value="google/gemini-2.5-flash-lite">Google Gemini 2.5 Flash</option>
+                        </select>
+                        <button id="send-button">Send</button>
+                    </div>
+                    <p id="disclaimer" class="hidden">Hyperfocus AI puede cometer errores.</p>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
-    // --- ESTADO Y PERSISTENCIA ---
-    let appState = {};
-    const defaultState = {
-        activeContext: { type: 'new_chat', id: null },
-        courses: [],
-        topics: {},
-        chats: {},
-        ui: { collapsed: {} }
-    };
-
-    function saveState() {
-        localStorage.setItem('hyperfocusState', JSON.stringify(appState));
-    }
-
-    function loadState() {
-        const savedState = localStorage.getItem('hyperfocusState');
-        appState = savedState ? JSON.parse(savedState) : JSON.parse(JSON.stringify(defaultState));
-    }
-
-    // --- LÓGICA DE RENDERIZADO ---
-    function renderSidebar() {
-        const { courses, topics, chats, ui, activeContext } = appState;
-        const coursesList = document.getElementById('courses-list');
-        const historyList = document.getElementById('history-list');
-        coursesList.innerHTML = '';
-        historyList.innerHTML = '';
-
-        courses.forEach(course => {
-            const isCollapsed = ui.collapsed[course.id];
-            const courseLi = document.createElement('li');
-            courseLi.innerHTML = `
-                <div class="sidebar-item ${activeContext.id === course.id ? 'active' : ''}" data-id="${course.id}" data-type="course">
-                    <span class="toggle-arrow ${isCollapsed ? 'collapsed' : ''}">▼</span>
-                    <span class="color-dot" style="background-color: ${course.color || '#888'}"></span>
-                    <span class="item-name">${course.name}</span>
-                    <button class="item-menu-btn" data-id="${course.id}" data-type="course">...</button>
-                </div>
-            `;
-            const nestedUl = document.createElement('ul');
-            nestedUl.className = 'nested-list';
-            if (!isCollapsed) {
-                Object.values(topics).filter(t => t.parentId === course.id).forEach(topic => nestedUl.appendChild(createTopicElement(topic)));
-                Object.values(chats).filter(c => c.parentId === course.id).forEach(chat => nestedUl.appendChild(createChatElement(chat)));
-            }
-            courseLi.appendChild(nestedUl);
-            coursesList.appendChild(courseLi);
-        });
-
-        Object.values(chats).filter(c => !c.parentId).forEach(chat => historyList.appendChild(createChatElement(chat)));
-    }
-    
-    function createTopicElement(topic) {
-        const isCollapsed = appState.ui.collapsed[topic.id];
-        const topicLi = document.createElement('li');
-        topicLi.innerHTML = `
-            <div class="sidebar-item ${appState.activeContext.id === topic.id ? 'active' : ''}" data-id="${topic.id}" data-type="topic">
-                <span class="toggle-arrow ${isCollapsed ? 'collapsed' : ''}">▼</span>
-                <span class="color-dot" style="background-color: ${topic.color || '#888'}"></span>
-                <span class="item-name">${topic.name}</span>
-                <button class="item-menu-btn" data-id="${topic.id}" data-type="topic">...</button>
-            </div>
-        `;
-        const nestedUl = document.createElement('ul');
-        nestedUl.className = 'nested-list';
-        if (!isCollapsed) {
-            Object.values(appState.chats).filter(c => c.parentId === topic.id).forEach(chat => nestedUl.appendChild(createChatElement(chat)));
-        }
-        topicLi.appendChild(nestedUl);
-        return topicLi;
-    }
-
-    function createChatElement(chat) {
-        const chatLi = document.createElement('li');
-        chatLi.innerHTML = `
-            <div class="sidebar-item ${appState.activeContext.id === chat.id ? 'active' : ''}" data-id="${chat.id}" data-type="chat">
-                <span class="toggle-arrow" style="opacity: 0;">▶</span>
-                <span class="item-name">${chat.title}</span>
-            </div>
-        `;
-        return chatLi;
-    }
-
-    // --- LÓGICA DE MENÚS Y MODALES ---
-    // (Incluir aquí las funciones showCustomPrompt y closeModal del código anterior)
-    
-    // --- LÓGICA PRINCIPAL ---
-    // (Incluir aquí las funciones loadContext, addMessageToUI, sendMessage del código anterior, con las adaptaciones necesarias)
-
-    // --- INICIALIZACIÓN Y EVENTOS ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // Cargar estado, renderizar UI y añadir todos los event listeners.
-        // El código completo es demasiado extenso para este formato, pero sigue la estructura definida.
-    });
+        // --- TODO EL JAVASCRIPT VA AQUÍ ---
+        // (El código completo que te daré en el siguiente paso)
     </script>
 </body>
 </html>
