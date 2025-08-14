@@ -1,30 +1,35 @@
-// api/chat.js
-export default async function handler(request, response) {
-  if (request.method !== 'POST') {
-    return response.status(405).json({ message: 'Method not allowed' });
-  }
+export const config = {
+    runtime: 'edge',
+};
 
-  const { model, messages } = request.body;
-  const apiKey = process.env.OPENROUTER_API_KEY; // Lee la clave desde Vercel
+export default async function handler(request) {
+    if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ message: 'Method not allowed' }), { status: 405, headers: { 'Content-Type': 'application/json' } });
+    }
 
-  if (!apiKey) {
-    return response.status(500).json({ error: 'API key not configured' });
-  }
+    try {
+        const { model, messages } = await request.json();
+        const apiKey = process.env.OPENROUTER_API_KEY;
 
-  try {
-    const apiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({ model, messages }),
-    });
+        if (!apiKey) {
+            return new Response(JSON.stringify({ error: 'API key not configured' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+        }
 
-    const data = await apiResponse.json();
-    return response.status(200).json(data);
+        const apiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({ model, messages }),
+        });
+        
+        return new Response(apiResponse.body, {
+            status: apiResponse.status,
+            headers: { 'Content-Type': 'application/json' },
+        });
 
-  } catch (error) {
-    return response.status(500).json({ error: 'Failed to fetch from OpenRouter' });
-  }
+    } catch (error) {
+        return new Response(JSON.stringify({ error: 'Failed to fetch from OpenRouter' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    }
 }
