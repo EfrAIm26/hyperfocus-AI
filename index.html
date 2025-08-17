@@ -7,15 +7,51 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
-    <input type="color" id="color-picker" class="hidden">
+
     <div id="context-menu" class="context-menu hidden"></div>
     <div id="custom-prompt-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3 id="modal-title"></h3>
             <input type="text" id="modal-input" class="modal-input" placeholder="Nombre...">
+            <div id="color-palette" class="color-palette hidden">
+                <div class="color-option" data-color="#ff6b6b"></div>
+                <div class="color-option" data-color="#feca57"></div>
+                <div class="color-option" data-color="#48dbfb"></div>
+                <div class="color-option" data-color="#1dd1a1"></div>
+                <div class="color-option" data-color="#5f27cd"></div>
+                <div class="color-option" data-color="#ff9f43"></div>
+                <div class="color-option" data-color="#00d2d3"></div>
+                <div class="color-option" data-color="#54a0ff"></div>
+                <div class="color-option" data-color="#e056fd"></div>
+                <div class="color-option" data-color="#ff7979"></div>
+                <div class="color-option" data-color="#badc58"></div>
+                <div class="color-option" data-color="#30336b"></div>
+            </div>
+            <div id="emoji-palette" class="emoji-palette hidden">
+                <div class="emoji-option" data-emoji="📚">📚</div>
+                <div class="emoji-option" data-emoji="🔬">🔬</div>
+                <div class="emoji-option" data-emoji="💻">💻</div>
+                <div class="emoji-option" data-emoji="💡">💡</div>
+                <div class="emoji-option" data-emoji="🧠">🧠</div>
+                <div class="emoji-option" data-emoji="🏛️">🏛️</div>
+                <div class="emoji-option" data-emoji="🇬🇧">🇬🇧</div>
+                <div class="emoji-option" data-emoji="🧮">🧮</div>
+                <div class="emoji-option" data-emoji="⚗️">⚗️</div>
+                <div class="emoji-option" data-emoji="🎨">🎨</div>
+                <div class="emoji-option" data-emoji="🎵">🎵</div>
+                <div class="emoji-option" data-emoji="🏃‍♂️">🏃‍♂️</div>
+                <div class="emoji-option" data-emoji="📊">📊</div>
+                <div class="emoji-option" data-emoji="🌍">🌍</div>
+                <div class="emoji-option" data-emoji="📖">📖</div>
+                <div class="emoji-option" data-emoji="✏️">✏️</div>
+                <div class="emoji-option" data-emoji="🔍">🔍</div>
+                <div class="emoji-option" data-emoji="📝">📝</div>
+                <div class="emoji-option" data-emoji="🎯">🎯</div>
+                <div class="emoji-option" data-emoji="⭐">⭐</div>
+            </div>
             <div class="modal-buttons">
                 <button id="modal-cancel-btn" class="modal-btn">Cancelar</button>
                 <button id="modal-accept-btn" class="modal-btn">Aceptar</button>
@@ -26,8 +62,8 @@
     <div id="app-container">
         <aside id="sidebar" class="hidden">
              <div id="sidebar-header">
-                <img id="profile-pic" src="https://i.pravatar.cc/40?u=ana" alt="Foto de perfil">
-                <span id="profile-name">Ana</span>
+                <div id="profile-pic"></div>
+                        <span id="profile-name">Efraim</span>
             </div>
             <div class="sidebar-section">
                 <a href="./horario/horario.html" style="text-decoration: none;">
@@ -42,6 +78,7 @@
                 <div class="sidebar-title"><span>Historial</span></div>
                 <ul class="sidebar-list" id="history-list"></ul>
             </div>
+            <div id="sidebar-resizer"></div>
         </aside>
 
         <main id="chat-workspace">
@@ -66,6 +103,6 @@
         </main>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <script type="module" src="/assets/js/main.js"></script>
 </body>
 </html>
