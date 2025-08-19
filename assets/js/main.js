@@ -64,10 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.createElement('button');
     logoutBtn.id = 'logout-btn';
     logoutBtn.textContent = 'Cerrar Sesión';
-    logoutBtn.classList.add('auth-btn');
+    logoutBtn.classList.add('auth-btn', 'logout-btn');
     if (!appState.isAuthenticated) logoutBtn.classList.add('hidden');
-    elements.sidebarHeader = document.getElementById('sidebar-header');
-    elements.sidebarHeader.appendChild(logoutBtn);
+    
+    // Crear sección separada para el botón de logout
+    const logoutSection = document.createElement('div');
+    logoutSection.className = 'sidebar-section logout-section';
+    logoutSection.appendChild(logoutBtn);
+    
+    const sidebar = document.getElementById('sidebar');
+    const sidebarResizer = document.getElementById('sidebar-resizer');
+    sidebar.insertBefore(logoutSection, sidebarResizer);
     elements.logoutBtn = logoutBtn;
 
     logoutBtn.addEventListener('click', () => {

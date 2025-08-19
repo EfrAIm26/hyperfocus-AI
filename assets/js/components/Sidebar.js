@@ -1,6 +1,8 @@
 // assets/js/components/Sidebar.js
 import { createCourse, createTopic, createChat, deleteCourse, deleteTopic, deleteChat, getRandomColor, appState, findTopicById } from '../state.js';
-import { showPrompt, showColorPicker, showEmojiPicker, showConfirmation } from './Modal.js';
+import { showPrompt, showConfirmation } from './Modal.js';
+import { ColorPicker } from './ColorPicker.js';
+import { EmojiPicker } from './EmojiPicker.js';
 
 function showContextMenu(x, y, items) {
     const contextMenu = document.getElementById('context-menu');
@@ -55,12 +57,21 @@ function createCourseElement(course, state) {
     const hasChildren = (state.topics[course.id] && state.topics[course.id].length > 0) || 
                        Object.values(state.chats).some(chat => chat.parentId === course.id && chat.parentType === 'course');
     
+    // Crear gradiente para el fondo de la píldora
+    const gradientStyle = course.color ? 
+        `background: linear-gradient(135deg, ${course.color}20, ${course.color}10) !important; border-color: ${course.color}40;` : '';
+    
     li.innerHTML = `
         ${hasChildren ? `<span class="toggle-arrow ${isCollapsed ? 'collapsed' : ''}" style="margin-left: 0px;">▼</span>` : '<span class="toggle-spacer" style="width: 16px; display: inline-block;"></span>'}
         <span class="color-dot" style="background-color: ${course.color}"></span>
         <span class="item-name">${course.icon ? course.icon + ' ' : ''}${course.name}</span>
         <button class="item-menu-btn">⋯</button>
     `;
+    
+    // Aplicar gradiente al fondo de la píldora
+    if (course.color) {
+        li.style.cssText += gradientStyle;
+    }
 
     const toggleArrow = li.querySelector('.toggle-arrow');
     const menuBtn = li.querySelector('.item-menu-btn');
@@ -132,12 +143,21 @@ function createTopicElement(topic, state) {
     const isCollapsed = state.ui.collapsed[`topic_${topic.id}`] === true;
     const hasChats = Object.values(state.chats).some(chat => chat.parentId === topic.id && chat.parentType === 'topic');
     
+    // Crear gradiente para el fondo de la píldora
+    const gradientStyle = topic.color ? 
+        `background: linear-gradient(135deg, ${topic.color}20, ${topic.color}10) !important; border-color: ${topic.color}40;` : '';
+    
     li.innerHTML = `
         ${hasChats ? `<span class="toggle-arrow ${isCollapsed ? 'collapsed' : ''}" style="margin-left: 0px;">▼</span>` : '<span class="toggle-spacer" style="width: 16px; display: inline-block;"></span>'}
         <span class="color-dot" style="background-color: ${topic.color}"></span>
         <span class="item-name">${topic.icon ? topic.icon + ' ' : ''}${topic.name}</span>
         <button class="item-menu-btn">⋯</button>
     `;
+    
+    // Aplicar gradiente al fondo de la píldora
+    if (topic.color) {
+        li.style.cssText += gradientStyle;
+    }
 
     const toggleArrow = li.querySelector('.toggle-arrow');
     const menuBtn = li.querySelector('.item-menu-btn');
@@ -195,7 +215,7 @@ function createTopicElement(topic, state) {
 
 function createChatElement(chat, level = 0, state) {
     const li = document.createElement('li');
-    li.className = 'sidebar-item';
+    li.className = 'sidebar-item chat-item';
     li.dataset.id = chat.id;
     
     li.innerHTML = `
@@ -251,7 +271,8 @@ async function renameCourse(courseId) {
 
 async function changeCourseColor(courseId) {
     const course = appState.courses.find(c => c.id === courseId);
-    const newColor = await showColorPicker('Seleccionar Color', course.color);
+    const colorPicker = new ColorPicker();
+    const newColor = await colorPicker.show();
     if (newColor) {
         course.color = newColor;
         document.dispatchEvent(new CustomEvent('stateChanged'));
@@ -260,8 +281,9 @@ async function changeCourseColor(courseId) {
 
 async function changeCourseIcon(courseId) {
     const course = appState.courses.find(c => c.id === courseId);
-    const newIcon = await showEmojiPicker('Seleccionar Icono', course.icon);
-    if (newIcon) {
+    const emojiPicker = new EmojiPicker();
+    const newIcon = await emojiPicker.show();
+    if (newIcon !== null) {
         course.icon = newIcon;
         document.dispatchEvent(new CustomEvent('stateChanged'));
     }
@@ -284,7 +306,8 @@ async function renameTopic(topicId) {
 
 async function changeTopicColor(topicId) {
     const topic = findTopicById(topicId);
-    const newColor = await showColorPicker('Seleccionar Color', topic.color);
+    const colorPicker = new ColorPicker();
+    const newColor = await colorPicker.show();
     if (newColor) {
         topic.color = newColor;
         document.dispatchEvent(new CustomEvent('stateChanged'));
@@ -293,8 +316,9 @@ async function changeTopicColor(topicId) {
 
 async function changeTopicIcon(topicId) {
     const topic = findTopicById(topicId);
-    const newIcon = await showEmojiPicker('Seleccionar Icono', topic.icon);
-    if (newIcon) {
+    const emojiPicker = new EmojiPicker();
+    const newIcon = await emojiPicker.show();
+    if (newIcon !== null) {
         topic.icon = newIcon;
         document.dispatchEvent(new CustomEvent('stateChanged'));
     }

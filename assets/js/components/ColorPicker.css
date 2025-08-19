@@ -1,0 +1,331 @@
+/* ColorPicker.css - Estilos para el componente ColorPicker */
+
+.color-picker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(2px);
+}
+
+.color-picker-modal {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    width: 380px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.color-picker-header {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 0;
+}
+
+.color-picker-tabs {
+    display: flex;
+    background: #f8f9fa;
+}
+
+.color-picker-tab {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.color-picker-tab:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.color-picker-tab.active {
+    background: white;
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+.color-picker-content {
+    padding: 20px;
+}
+
+.color-picker-tab-content {
+    display: block;
+}
+
+.color-picker-tab-content.hidden {
+    display: none;
+}
+
+/* Espectro de color */
+.color-picker-main {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.color-picker-spectrum {
+    position: relative;
+    flex: 1;
+}
+
+.color-picker-canvas {
+    border-radius: 8px;
+    cursor: crosshair;
+    border: 1px solid #ddd;
+    display: block;
+}
+
+.color-picker-cursor {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.color-picker-hue {
+    width: 24px;
+}
+
+.color-picker-hue-bar {
+    position: relative;
+    height: 200px;
+}
+
+.color-picker-hue-canvas {
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    display: block;
+}
+
+.color-picker-hue-cursor {
+    position: absolute;
+    left: -2px;
+    width: 24px;
+    height: 6px;
+    border: 2px solid white;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.color-picker-preview {
+    margin-bottom: 16px;
+}
+
+.color-picker-preview-color {
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #DADF77;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Cuadrícula de colores */
+.color-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 4px;
+}
+
+.color-picker-grid-item {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker-grid-item:hover {
+    transform: scale(1.05);
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.color-picker-grid-item:active {
+    transform: scale(0.95);
+}
+
+/* Input hexadecimal */
+.color-picker-input {
+    padding: 0 20px 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.color-picker-hex {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    text-align: center;
+    font-weight: 500;
+    color: #333;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.color-picker-hex:focus {
+    outline: none;
+    border-color: #007bff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Botones de acción */
+.color-picker-actions {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f8f9fa;
+}
+
+.color-picker-btn {
+    flex: 1;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.color-picker-cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.color-picker-cancel:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker-save {
+    background: #007bff;
+    color: white;
+}
+
+.color-picker-save:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Animaciones */
+.color-picker-modal {
+    animation: colorPickerFadeIn 0.2s ease-out;
+}
+
+@keyframes colorPickerFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .color-picker-modal {
+        width: 95vw;
+        margin: 10px;
+    }
+    
+    .color-picker-content {
+        padding: 16px;
+    }
+    
+    .color-picker-canvas {
+        width: 240px;
+        height: 160px;
+    }
+    
+    .color-picker-hue-canvas {
+        height: 160px;
+    }
+    
+    .color-picker-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .color-picker-grid-item {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Estados de focus para accesibilidad */
+.color-picker-tab:focus,
+.color-picker-btn:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.color-picker-grid-item:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 1px;
+}
+
+/* Mejoras visuales adicionales */
+.color-picker-spectrum::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 9px;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+}
+
+.color-picker-hue-bar::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 13px;
+    background: linear-gradient(180deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+}
